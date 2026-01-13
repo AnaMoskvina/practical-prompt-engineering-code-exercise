@@ -11,8 +11,13 @@ const STORAGE_KEY = 'promptLibrary';
 
 // Load prompts from localStorage
 function loadPrompts() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        console.error('Error loading prompts:', error);
+        return [];
+    }
 }
 
 // Save prompts to localStorage
@@ -34,11 +39,11 @@ function displayPrompts() {
         return;
     }
     
-    promptsList.innerHTML = prompts.map((prompt, index) => `
+    promptsList.innerHTML = prompts.map((prompt) => `
         <div class="prompt-card">
             <div class="prompt-header">
                 <h3 class="prompt-title">${escapeHtml(prompt.title)}</h3>
-                <button class="btn btn-delete" onclick="deletePrompt(${index})">Delete</button>
+                <button class="btn btn-delete" onclick="deletePrompt(${prompt.id})">Delete</button>
             </div>
             <p class="prompt-content">${escapeHtml(prompt.content)}</p>
         </div>
@@ -49,7 +54,7 @@ function displayPrompts() {
 function addPrompt(title, content) {
     const prompts = loadPrompts();
     const newPrompt = {
-        id: Date.now(),
+        id: Date.now() + Math.random(),
         title: title,
         content: content,
         createdAt: new Date().toISOString()
@@ -61,10 +66,10 @@ function addPrompt(title, content) {
 }
 
 // Delete prompt
-function deletePrompt(index) {
+function deletePrompt(id) {
     const prompts = loadPrompts();
-    prompts.splice(index, 1);
-    savePrompts(prompts);
+    const filteredPrompts = prompts.filter(prompt => prompt.id !== id);
+    savePrompts(filteredPrompts);
     displayPrompts();
 }
 
