@@ -54,7 +54,7 @@ function displayPrompts() {
 function addPrompt(title, content) {
     const prompts = loadPrompts();
     const newPrompt = {
-        id: Date.now().toString(36) + Math.random().toString(36).substr(2),
+        id: Date.now().toString(36) + Math.random().toString(36).substring(2),
         title: title,
         content: content,
         createdAt: new Date().toISOString()
