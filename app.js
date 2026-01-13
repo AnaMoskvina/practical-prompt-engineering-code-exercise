@@ -43,7 +43,7 @@ function displayPrompts() {
         <div class="prompt-card">
             <div class="prompt-header">
                 <h3 class="prompt-title">${escapeHtml(prompt.title)}</h3>
-                <button class="btn btn-delete" onclick="deletePrompt(${prompt.id})">Delete</button>
+                <button class="btn btn-delete" data-prompt-id="${prompt.id}">Delete</button>
             </div>
             <p class="prompt-content">${escapeHtml(prompt.content)}</p>
         </div>
@@ -54,7 +54,7 @@ function displayPrompts() {
 function addPrompt(title, content) {
     const prompts = loadPrompts();
     const newPrompt = {
-        id: Date.now() + Math.random(),
+        id: Date.now().toString(36) + Math.random().toString(36).substr(2),
         title: title,
         content: content,
         createdAt: new Date().toISOString()
@@ -92,6 +92,16 @@ promptForm.addEventListener('submit', (e) => {
         promptTitle.value = '';
         promptContent.value = '';
         promptTitle.focus();
+    }
+});
+
+// Handle delete button clicks using event delegation
+promptsList.addEventListener('click', (e) => {
+    if (e.target.classList.contains('btn-delete')) {
+        const promptId = e.target.getAttribute('data-prompt-id');
+        if (promptId) {
+            deletePrompt(promptId);
+        }
     }
 });
 
